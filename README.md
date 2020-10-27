@@ -7,12 +7,15 @@ way to assert that certain things were logged.
 
 ## Example
 
+First, add a dependency on `tracing-test` in `Cargo.toml`:
+
 ```toml
-# Cargo.toml
 tokio = { version = "0.2", features = ["rt-threaded", "macros"] }
 tracing = "0.1"
 tracing-test = "0.1"
 ```
+
+Then, annotate your test function with the `#[traced_test]` macro.
 
 ```rust
 use tracing::{info, warn};
@@ -37,6 +40,10 @@ async fn test_logs_are_captured() {
     assert!(!logs_contain("logged on the error level"));
 }
 ```
+
+Done! You can write assertions using the injected `logs_contain` function. Logs
+are written to stdout, so they are captured by the cargo test runner by
+default, but printed if the test fails.
 
 
 ## Rationale / Why You Need This
