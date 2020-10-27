@@ -45,6 +45,22 @@ Done! You can write assertions using the injected `logs_contain` function. Logs
 are written to stdout, so they are captured by the cargo test runner by
 default, but printed if the test fails.
 
+Of course, you can also annotate regular non-async tests:
+
+```rust
+use tracing::info;
+use tracing_test::traced_test;
+
+#[traced_test]
+#[test]
+fn plain_old_test() {
+    assert!(!logs_contain("Logging from a non-async test"));
+    info!("Logging from a non-async test");
+    assert!(logs_contain("Logging from a non-async test"));
+    assert!(!logs_contain("This was never logged"));
+}
+```
+
 
 ## Rationale / Why You Need This
 

@@ -24,4 +24,13 @@ mod tests {
         assert!(logs_contain("logged on the warn level"));
         assert!(!logs_contain("logged on the error level"));
     }
+
+    #[traced_test]
+    #[test]
+    fn annotate_sync_test() {
+        assert!(!logs_contain("Logging from a non-async test"));
+        info!("Logging from a non-async test");
+        assert!(logs_contain("Logging from a non-async test"));
+        assert!(!logs_contain("This was never logged"));
+    }
 }
