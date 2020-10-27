@@ -1,0 +1,20 @@
+[package]
+name = "tracing-test"
+version = "0.1.0"
+authors = ["Danilo Bargen <mail@dbrgn.ch>"]
+license = "MIT"
+edition = "2018"
+repository = "https://github.com/dbrgn/tracing-test"
+description = """
+Helper functions and macros that allow for easier testing of crates that use `tracing`.
+"""
+categories = ["development-tools::testing"]
+
+[dependencies]
+lazy_static = "1.4"
+tracing-core = "0.1"
+tracing-subscriber = "0.2"
+tracing-test-macro = { path = "../tracing-test-macro", version = "0.1" }
+
+[badges]
+maintenance = { status = "experimental" }

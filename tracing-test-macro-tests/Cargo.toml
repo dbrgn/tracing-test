@@ -1,0 +1,16 @@
+[package]
+name = "tracing-test-macro-tests"
+version = "0.1.0"
+authors = ["Danilo Bargen <mail@dbrgn.ch>"]
+license = "MIT"
+edition = "2018"
+repository = "https://github.com/dbrgn/tracing-test"
+description = "Only used for internal testing, don't publish."
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
+tokio = { version = "0.2", features = ["rt-threaded", "macros"] }
+tracing = { version = "0.1", default-features = false }
+tracing-test = { path = "../tracing-test", version = "0.1" }
