@@ -1,7 +1,11 @@
 //! # tracing_test_macro
 //!
-//! This crate provides a proc macro that can be added to test functions in
-//! order to ensure that all tracing logs are written to a global buffer.
+//! This crate provides a procedural macro that can be added to test functions in order to ensure
+//! that all tracing logs are written to a global buffer.
+//!
+//! You should not use this crate directly. Instead, use the macro through [tracing-test].
+//!
+//! [tracing-test]: https://docs.rs/tracing-test
 extern crate proc_macro;
 
 use std::sync::Mutex;
@@ -36,8 +40,7 @@ fn get_free_scope(mut test_fn_name: String) -> String {
     test_fn_name
 }
 
-/// A proc macro that ensures that a global logger is registered for the
-/// annotated test.
+/// A procedural macro that ensures that a global logger is registered for the annotated test.
 ///
 /// Additionally, the macro injects a local function called `logs_contain`,
 /// which can be used to assert that a certain string was logged within this
