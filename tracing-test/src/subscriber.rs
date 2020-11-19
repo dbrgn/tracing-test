@@ -49,7 +49,7 @@ impl<'a> MakeWriter for MockWriter<'a> {
     type Writer = Self;
 
     fn make_writer(&self) -> Self::Writer {
-        MockWriter::new(self.buf.clone())
+        MockWriter::new(self.buf)
     }
 }
 
