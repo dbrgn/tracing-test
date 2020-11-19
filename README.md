@@ -1,5 +1,9 @@
 # tracing-test
 
+[![Build status][workflow-badge]][workflow]
+[![Crates.io Version][crates-io-badge]][crates-io]
+[![Crates.io Downloads][crates-io-download-badge]][crates-io-download]
+
 This crate provides an easy way to enable logging in tests that use
 [tracing](https://tracing.rs/), even if they're async. Additionally, it adds a
 way to assert that certain things were logged.
@@ -105,3 +109,12 @@ Licensed under either of
 Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall
 be dual licensed as above, without any additional terms or conditions.
+
+
+<!-- Badges -->
+[workflow]: https://github.com/dbrgn/tracing-test/actions?query=workflow%3ACI
+[workflow-badge]: https://img.shields.io/github/workflow/status/dbrgn/tracing-test/CI/main
+[crates-io]: https://crates.io/crates/tracing-test
+[crates-io-badge]: https://img.shields.io/crates/v/tracing-test.svg?maxAge=3600
+[crates-io-download]: https://crates.io/crates/tracing-test
+[crates-io-download-badge]: https://img.shields.io/crates/d/tracing-test.svg?maxAge=3600
