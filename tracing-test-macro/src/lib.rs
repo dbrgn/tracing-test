@@ -46,25 +46,7 @@ fn get_free_scope(mut test_fn_name: String) -> String {
 /// which can be used to assert that a certain string was logged within this
 /// test.
 ///
-/// ## Example
-///
-/// ```rust,no_run
-/// use tokio;
-/// use tracing::{info, warn};
-/// use tracing_test::traced_test;
-///
-/// #[tokio::test]
-/// #[traced_test]
-/// async fn test_logs_are_captured() {
-///     info!("This is being logged on the info level");
-///     tokio::spawn(async {
-///         warn!("This is being logged on the warn level from a spawned task");
-///     }).await.unwrap();
-///     assert!(logs_contain("logged on the info level"));
-///     assert!(logs_contain("logged on the warn level"));
-///     assert!(!logs_contain("logged on the error level"));
-/// }
-/// ```
+/// Check out the docs of the `tracing-test` crate for more usage information.
 #[proc_macro_attribute]
 pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
     // Parse annotated function

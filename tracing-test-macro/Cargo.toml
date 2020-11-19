@@ -23,7 +23,6 @@ syn = { version = "1", features = ["full"] }
 [dev-dependencies]
 tokio = { version = "0.2", features = ["rt-threaded", "macros"] }
 tracing = { version = "0.1", default-features = false }
-tracing-test = { path = "../tracing-test", version = "0.1" }
 
 [badges]
 maintenance = { status = "experimental" }
