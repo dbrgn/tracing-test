@@ -76,7 +76,7 @@ feature) and spawn tasks, the tracing logs in those tasks will not be captured
 by the subscriber.
 
 The macro provided in this crate registers a global default subscriber instead.
-This subscriber contains a mock writer which logs into a global static buffer.
+This subscriber contains a writer which logs into a global static in-memory buffer.
 
 At the beginning of every test, the macro injects span opening code. The span
 uses the name of the test function (unless it's already taken, then a counter
@@ -86,7 +86,7 @@ name, which helps when debugging.
 Finally, a function called `logs_contain(value: &str)` is injected into every
 annotated test. It filters the logs in the buffer to include only lines
 containing ` {span_name}: ` and then searches the value in the matching log
-lines.
+lines. This can be used to assert that a message was logged during a test.
 
 
 ## License

@@ -16,5 +16,9 @@ tracing-core = "0.1"
 tracing-subscriber = "0.2"
 tracing-test-macro = { path = "../tracing-test-macro", version = "0.1" }
 
+[dev-dependencies]
+tokio = { version = "0.2", features = ["rt-threaded", "macros"] }
+tracing = { version = "0.1", default-features = false }
+
 [badges]
 maintenance = { status = "experimental" }
