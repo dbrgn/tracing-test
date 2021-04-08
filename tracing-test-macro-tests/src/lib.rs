@@ -33,4 +33,13 @@ mod tests {
         assert!(logs_contain("Logging from a non-async test"));
         assert!(!logs_contain("This was never logged"));
     }
+
+    #[traced_test]
+    #[test]
+    fn annotate_target_sync_test() {
+        assert!(!logs_contain("Logging from a non-async test"));
+        info!(target: "target", "Logging from a non-async but targeted test");
+        assert!(logs_contain("Logging from a non-async but targeted test"));
+        assert!(!logs_contain("This was never logged"));
+    }
 }
