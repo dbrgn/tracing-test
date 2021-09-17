@@ -20,9 +20,5 @@ lazy_static = "1.4"
 quote = "1"
 syn = { version = "1", features = ["full"] }
 
-[dev-dependencies]
-tokio = { version = "0.2", features = ["rt-threaded", "macros"] }
-tracing = { version = "0.1", default-features = false }
-
 [badges]
 maintenance = { status = "experimental" }

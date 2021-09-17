@@ -7,7 +7,7 @@
 //! First, add a dependency on `tracing-test` in `Cargo.toml`:
 //!
 //! ```toml
-//! tokio = { version = "0.2", features = ["rt-threaded", "macros"] }
+//! tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 //! tracing = "0.1"
 //! tracing-test = "0.1"
 //! ```
@@ -69,9 +69,9 @@
 //! ```
 //!
 //! This works fine, as long as no threads are involved. As soon as you use a
-//! multi-threaded test runtime (e.g. the `#[tokio::test]` with the `rt-threaded`
-//! feature) and spawn tasks, the tracing logs in those tasks will not be captured
-//! by the subscriber.
+//! multi-threaded test runtime (e.g. the `#[tokio::test]` with the
+//! `rt-multi-thread` feature) and spawn tasks, the tracing logs in those tasks
+//! will not be captured by the subscriber.
 //!
 //! The macro provided in this crate registers a global default subscriber instead.
 //! This subscriber contains a writer which logs into a global static in-memory buffer.

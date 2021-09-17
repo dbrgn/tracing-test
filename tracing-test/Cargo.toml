@@ -17,7 +17,7 @@ tracing-subscriber = "0.2"
 tracing-test-macro = { path = "../tracing-test-macro", version = "0.1" }
 
 [dev-dependencies]
-tokio = { version = "0.2", features = ["rt-threaded", "macros"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] } # Used for doctests
 tracing = { version = "0.1", default-features = false }
 
 [badges]
