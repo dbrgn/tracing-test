@@ -88,21 +88,33 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
         .into(),
     )
     .expect("Could not parse quoted statement enter");
-    let assert_fn = parse::<Stmt>(
+    let assert_contains = parse::<Stmt>(
         quote! {
             fn logs_contain(val: &str) -> bool {
                 tracing_test::internal::logs_with_scope_contain(#scope, val)
             }
+
         }
         .into(),
     )
-    .expect("Could not parse quoted statement assert_fn");
+    .expect("Could not parse quoted statement assert_contains");
+    let assert_run = parse::<Stmt>(
+        quote! {
+            /// Run a function against the logs
+            fn logs_run(f: &dyn Fn(String)) -> Result<(), String> {
+                tracing_test::internal::logs_assert(f)
+            }
+        }
+        .into(),
+    )
+    .expect("Could not parse quoted statement assert_run");
 
     // Inject code into function
     function.block.stmts.insert(0, init);
     function.block.stmts.insert(1, span);
     function.block.stmts.insert(2, enter);
-    function.block.stmts.insert(3, assert_fn);
+    function.block.stmts.insert(3, assert_contains);
+    function.block.stmts.insert(4, assert_run);
 
     // Generate token stream
     TokenStream::from(function.to_token_stream())

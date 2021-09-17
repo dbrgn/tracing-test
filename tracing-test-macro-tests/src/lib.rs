@@ -12,9 +12,11 @@ mod tests {
         // Local log
         info!("This is being logged on the info level");
 
+        info!("CountMe");
         // Log from a spawned task (which runs in a separate thread)
         tokio::spawn(async {
             warn!("This is being logged on the warn level from a spawned task");
+            info!("CountMe");
         })
         .await
         .unwrap();
@@ -23,6 +25,19 @@ mod tests {
         assert!(logs_contain("logged on the info level"));
         assert!(logs_contain("logged on the warn level"));
         assert!(!logs_contain("logged on the error level"));
+
+        // ensure that `logs_run` works as intended
+        fn check_count(logs: String) {
+            let mut count: usize = 0;
+            for line in logs.split('\n') {
+                if line.contains("CountMe") {
+                    count += 1;
+                }
+            }
+            assert!(count == 2)
+        }
+
+        let _ = logs_run(&check_count);
     }
 
     #[traced_test]
@@ -32,5 +47,17 @@ mod tests {
         info!("Logging from a non-async test");
         assert!(logs_contain("Logging from a non-async test"));
         assert!(!logs_contain("This was never logged"));
+
+        fn check_count(logs: String) {
+            let mut count: usize = 0;
+            for line in logs.split('\n') {
+                if line.contains("Logging from a non-async test") {
+                    count += 1;
+                }
+            }
+            assert!(count > 0)
+        }
+
+        let _ = logs_run(&check_count);
     }
 }
