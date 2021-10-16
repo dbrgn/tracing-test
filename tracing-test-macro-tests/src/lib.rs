@@ -26,18 +26,22 @@ mod tests {
         assert!(logs_contain("logged on the warn level"));
         assert!(!logs_contain("logged on the error level"));
 
-        // ensure that `logs_run` works as intended
-        fn check_count(logs: String) {
-            let mut count: usize = 0;
-            for line in logs.split('\n') {
-                if line.contains("CountMe") {
-                    count += 1;
-                }
+        // Ensure that `logs_assert` works as intended (with a closure)
+        logs_assert(|lines: &[&str]| {
+            match lines.iter().filter(|line| line.contains("CountMe")).count() {
+                2 => Ok(()),
+                other => Err(format!("Count should be 2, but was {}", other)),
             }
-            assert!(count == 2)
-        }
+        });
 
-        let _ = logs_run(&check_count);
+        // Ensure that `logs_assert` works as intended (with a function)
+        fn assert_fn(lines: &[&str]) -> Result<(), String> {
+            match lines.iter().filter(|line| line.contains("CountMe")).count() {
+                2 => Ok(()),
+                other => Err(format!("Count should be 2, but was {}", other)),
+            }
+        }
+        logs_assert(assert_fn);
     }
 
     #[traced_test]
@@ -47,17 +51,5 @@ mod tests {
         info!("Logging from a non-async test");
         assert!(logs_contain("Logging from a non-async test"));
         assert!(!logs_contain("This was never logged"));
-
-        fn check_count(logs: String) {
-            let mut count: usize = 0;
-            for line in logs.split('\n') {
-                if line.contains("Logging from a non-async test") {
-                    count += 1;
-                }
-            }
-            assert!(count > 0)
-        }
-
-        let _ = logs_run(&check_count);
     }
 }

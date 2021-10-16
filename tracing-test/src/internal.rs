@@ -31,13 +31,19 @@ pub fn logs_with_scope_contain(scope: &str, val: &str) -> bool {
     false
 }
 
-
-/// Runs a function against the logs as a String
+/// Run a function against a slice of logs and return its result.
 ///
-/// This function should usually not be used directly, instead use the `logs_run(val: &str)`
-/// function injected by the [`#[traced_test]`](attr.traced_test.html) macro.
-pub fn logs_assert(f: &dyn Fn(String)) -> Result<(), String> {
-    let logs = String::from_utf8(GLOBAL_BUF.lock().unwrap().to_vec()).unwrap();
-    f(logs);
-    Ok(())
+/// This function should usually not be used directly, instead use the
+/// `logs_assert(F) where F: Fn(&[&str]) -> Result<(), String>` function
+/// injected by the [`#[traced_test]`](attr.traced_test.html) macro.
+pub fn logs_assert<F>(f: F) -> Result<(), String>
+where
+    F: Fn(&[&str]) -> Result<(), String>,
+{
+    let buf = GLOBAL_BUF.lock().unwrap();
+    let logs: Vec<&str> = std::str::from_utf8(&buf)
+        .expect("Logs contain invalid UTF8")
+        .lines()
+        .collect();
+    f(&logs)
 }
