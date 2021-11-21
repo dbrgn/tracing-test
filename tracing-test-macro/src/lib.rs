@@ -59,12 +59,14 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let init = parse::<Stmt>(
         quote! {
             tracing_test::internal::INITIALIZED.call_once(|| {
-                let crate_name = module_path!()
-                    .split(":")
-                    .next()
-                    .expect("Could not find crate name in module path")
-                    .to_string();
-                let env_filter = format!("{}=trace", crate_name);
+                let env_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| {
+                    let crate_name = module_path!()
+                        .split(":")
+                        .next()
+                        .expect("Could not find crate name in module path")
+                        .to_string();
+                    format!("{}=trace", crate_name)
+                });
                 let mock_writer = tracing_test::internal::MockWriter::new(&tracing_test::internal::GLOBAL_BUF);
                 let subscriber = tracing_test::internal::get_subscriber(mock_writer, &env_filter);
                 tracing::dispatcher::set_global_default(subscriber)
