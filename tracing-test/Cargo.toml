@@ -8,6 +8,7 @@ repository = "https://github.com/dbrgn/tracing-test"
 description = """
 Helper functions and macros that allow for easier testing of crates that use `tracing`.
 """
+readme = "../README.md"
 categories = ["development-tools::testing"]
 
 [dependencies]

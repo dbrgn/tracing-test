@@ -10,6 +10,7 @@ A procedural macro that allow for easier testing of crates that use `tracing`.
 
 Internal crate, should only be used through the `tracing-test` crate.
 """
+readme = "../README.md"
 categories = ["development-tools::testing"]
 
 [lib]
