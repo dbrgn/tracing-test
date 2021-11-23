@@ -30,7 +30,7 @@ mod tests {
         logs_assert(|lines: &[&str]| {
             match lines.iter().filter(|line| line.contains("CountMe")).count() {
                 2 => Ok(()),
-                other => Err(format!("Count should be 2, but was {}", other)),
+                n => Err(format!("Count should be 2, but was {}", n)),
             }
         });
 
@@ -38,7 +38,7 @@ mod tests {
         fn assert_fn(lines: &[&str]) -> Result<(), String> {
             match lines.iter().filter(|line| line.contains("CountMe")).count() {
                 2 => Ok(()),
-                other => Err(format!("Count should be 2, but was {}", other)),
+                n => Err(format!("Count should be 2, but was {}", n)),
             }
         }
         logs_assert(assert_fn);

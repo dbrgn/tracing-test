@@ -31,16 +31,31 @@
 //!     .await
 //!     .unwrap();
 //!
-//!     // Ensure that `logs_contain` works as intended
+//!     // Ensure that certain strings are or aren't logged
 //!     assert!(logs_contain("logged on the info level"));
 //!     assert!(logs_contain("logged on the warn level"));
 //!     assert!(!logs_contain("logged on the error level"));
+//!
+//!     // Ensure that the string `logged` is logged exactly twice
+//!     logs_assert(|lines: &[&str]| {
+//!         match lines.iter().filter(|line| line.contains("logged")).count() {
+//!             2 => Ok(()),
+//!             n => Err(format!("Expected two matching logs, but found {}", n)),
+//!         }
+//!     });
 //! }
 //! ```
 //!
-//! Done! You can write assertions using the injected `logs_contain` function. Logs
-//! are written to stdout, so they are captured by the cargo test runner by
-//! default, but printed if the test fails.
+//! Done! You can write assertions using one of two injected functions:
+//!
+//! - `logs_contain(&str) -> bool`: Use this within an `assert!` call to ensure
+//!   that a certain string is (or isn't) logged anywhere in the logs.
+//! - `logs_assert(f: impl Fn(&[&str]) -> Result<(), String>)`:  Run a function
+//!   against the log lines. If the function returns an `Err`, panic. This can
+//!   be used to run arbitrary assertion logic against the logs.
+//!
+//! Logs are written to stdout, so they are captured by the cargo test runner
+//! by default, but printed if the test fails.
 //!
 //! Of course, you can also annotate regular non-async tests:
 //!
@@ -57,6 +72,7 @@
 //!     assert!(!logs_contain("This was never logged"));
 //! }
 //! ```
+//!
 //! ## Rationale / Why You Need This
 //!
 //! Tracing allows you to set a default subscriber within a scope:
@@ -85,6 +101,7 @@
 //! annotated test. It filters the logs in the buffer to include only lines
 //! containing ` {span_name}: ` and then searches the value in the matching log
 //! lines. This can be used to assert that a message was logged during a test.
+
 pub mod internal;
 mod subscriber;
 
