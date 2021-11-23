@@ -12,9 +12,11 @@ mod tests {
         // Local log
         info!("This is being logged on the info level");
 
+        info!("CountMe");
         // Log from a spawned task (which runs in a separate thread)
         tokio::spawn(async {
             warn!("This is being logged on the warn level from a spawned task");
+            info!("CountMe");
         })
         .await
         .unwrap();
@@ -23,6 +25,23 @@ mod tests {
         assert!(logs_contain("logged on the info level"));
         assert!(logs_contain("logged on the warn level"));
         assert!(!logs_contain("logged on the error level"));
+
+        // Ensure that `logs_assert` works as intended (with a closure)
+        logs_assert(|lines: &[&str]| {
+            match lines.iter().filter(|line| line.contains("CountMe")).count() {
+                2 => Ok(()),
+                n => Err(format!("Count should be 2, but was {}", n)),
+            }
+        });
+
+        // Ensure that `logs_assert` works as intended (with a function)
+        fn assert_fn(lines: &[&str]) -> Result<(), String> {
+            match lines.iter().filter(|line| line.contains("CountMe")).count() {
+                2 => Ok(()),
+                n => Err(format!("Count should be 2, but was {}", n)),
+            }
+        }
+        logs_assert(assert_fn);
     }
 
     #[traced_test]
