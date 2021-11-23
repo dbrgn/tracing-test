@@ -45,7 +45,7 @@ impl<'a> io::Write for MockWriter<'a> {
     }
 }
 
-impl<'a> MakeWriter for MockWriter<'a> {
+impl<'a> MakeWriter<'_> for MockWriter<'a> {
     type Writer = Self;
 
     fn make_writer(&self) -> Self::Writer {

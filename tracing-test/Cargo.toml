@@ -13,12 +13,12 @@ categories = ["development-tools::testing"]
 [dependencies]
 lazy_static = "1.4"
 tracing-core = "0.1"
-tracing-subscriber = "0.2"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-test-macro = { path = "../tracing-test-macro", version = "0.1" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] } # Used for doctests
-tracing = { version = "0.1", default-features = false }
+tracing = { version = "0.1", default-features = false, features = ["std"] }
 
 [badges]
 maintenance = { status = "experimental" }
