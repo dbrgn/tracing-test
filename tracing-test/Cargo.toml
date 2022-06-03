@@ -1,6 +1,6 @@
 [package]
 name = "tracing-test"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Danilo Bargen <mail@dbrgn.ch>"]
 license = "MIT"
 edition = "2018"
