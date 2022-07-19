@@ -8,6 +8,17 @@ This crate provides an easy way to enable logging in tests that use
 [tracing](https://tracing.rs/), even if they're async. Additionally, it adds a
 way to assert that certain things were logged.
 
+The focus is on testing the logging, not on debugging the tests. That's why the
+library ensures that the logs do not depend on external state. For example, the
+`RUST_LOG` env variable is not used for log filtering.
+
+Related crates:
+
+- [test-log](https://crates.io/crates/test-log): Initialize loggers before
+  running tests
+- [tracing-fluent-assertions](https://crates.io/crates/tracing-fluent-assertions):
+  More powerful assertions that also allow analyzing spans
+
 ## Docs / Usage / Example
 
 See <https://docs.rs/tracing-test/>.
