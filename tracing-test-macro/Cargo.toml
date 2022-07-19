@@ -23,3 +23,7 @@ syn = { version = "1", features = ["full"] }
 
 [badges]
 maintenance = { status = "experimental" }
+
+[features]
+# Disable hardcoded env filter
+no-env-filter = []

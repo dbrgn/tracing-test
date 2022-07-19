@@ -40,7 +40,8 @@ fn get_free_scope(mut test_fn_name: String) -> String {
     test_fn_name
 }
 
-/// A procedural macro that ensures that a global logger is registered for the annotated test.
+/// A procedural macro that ensures that a global logger is registered for the
+/// annotated test.
 ///
 /// Additionally, the macro injects a local function called `logs_contain`,
 /// which can be used to assert that a certain string was logged within this
@@ -55,16 +56,27 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
     // Determine scope
     let scope = get_free_scope(function.sig.ident.to_string());
 
+    // Determine features
+    //
+    // Note: This cannot be called in the block below, otherwise it would be
+    //       evaluated in the context of the calling crate, not of the macro
+    //       crate!
+    let no_env_filter = cfg!(feature = "no-env-filter");
+
     // Prepare code that should be injected at the start of the function
     let init = parse::<Stmt>(
         quote! {
             tracing_test::internal::INITIALIZED.call_once(|| {
-                let crate_name = module_path!()
-                    .split(":")
-                    .next()
-                    .expect("Could not find crate name in module path")
-                    .to_string();
-                let env_filter = format!("{}=trace", crate_name);
+                let env_filter = if #no_env_filter {
+                    "trace".to_string()
+                } else {
+                    let crate_name = module_path!()
+                        .split(":")
+                        .next()
+                        .expect("Could not find crate name in module path")
+                        .to_string();
+                    format!("{}=trace", crate_name)
+                };
                 let mock_writer = tracing_test::internal::MockWriter::new(&tracing_test::internal::GLOBAL_BUF);
                 let subscriber = tracing_test::internal::get_subscriber(mock_writer, &env_filter);
                 tracing::dispatcher::set_global_default(subscriber)
