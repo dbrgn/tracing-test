@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - [feature] Add no-env-filter feature to disable log filtering (#16)
 
 
-## 0.2.2 - 2022-03-06
+## 0.2.2 - 2022-06-03
 
 - [bug] Ensure correct `Result` type is used (#15) 
 
