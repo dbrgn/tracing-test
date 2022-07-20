@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## 0.2.3 - 2022-07-20
+
+- [feature] Add no-env-filter feature to disable log filtering (#16)
+
+
 ## 0.2.2 - 2022-03-06
 
 - [bug] Ensure correct `Result` type is used (#15) 
