@@ -116,7 +116,7 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
             /// an `Err`, panic. This can be used to run arbitrary assertion
             /// logic against the logs.
             fn logs_assert(f: impl Fn(&[&str]) -> std::result::Result<(), String>) {
-                match tracing_test::internal::logs_assert(f) {
+                match tracing_test::internal::logs_assert(#scope, f) {
                     Ok(()) => {},
                     Err(msg) => panic!("The logs_assert function returned an error: {}", msg),
                 };

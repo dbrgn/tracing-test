@@ -52,4 +52,36 @@ mod tests {
         assert!(logs_contain("Logging from a non-async test"));
         assert!(!logs_contain("This was never logged"));
     }
+
+    #[traced_test]
+    #[test]
+    fn no_log_from_other_test1() {
+        info!("log count");
+        logs_assert(|lines: &[&str]| {
+            match lines
+                .iter()
+                .filter(|line| line.contains("log count"))
+                .count()
+            {
+                1 => Ok(()),
+                n => Err(format!("Count should be 1, but was {}", n)),
+            }
+        });
+    }
+
+    #[traced_test]
+    #[test]
+    fn no_log_from_other_test2() {
+        info!("log count");
+        logs_assert(|lines: &[&str]| {
+            match lines
+                .iter()
+                .filter(|line| line.contains("log count"))
+                .count()
+            {
+                1 => Ok(()),
+                n => Err(format!("Count should be 1, but was {}", n)),
+            }
+        });
+    }
 }
