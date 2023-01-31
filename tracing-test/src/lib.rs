@@ -126,14 +126,14 @@
 //! tracing-test = { version = "0.1", features = ["no-env-filter"] }
 //! ```
 //!
-//! *Note:* Rust "integration tests" (in the `tests/` directory) are each
-//! built into a separate crate from the crate they test. As a result,
-//! integration tests must use this feature to capture and observe logs.
-//!
 //! Note that this will result in _all_ logs from _all_ your dependencies being
 //! captured! This means that the `logs_contain` function may become less
 //! useful, and you might need to use `logs_assert` instead, with your own
 //! custom filtering logic.
+//!
+//! **Note:** Rust "integration tests" (in the `tests/` directory) are each
+//! built into a separate crate from the crate they test. As a result,
+//! integration tests must use `no-env-filter` to capture and observe logs.
 
 pub mod internal;
 mod subscriber;
