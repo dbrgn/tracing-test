@@ -1,6 +1,6 @@
 [package]
 name = "tracing-test"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["Danilo Bargen <mail@dbrgn.ch>"]
 license = "MIT"
 edition = "2018"
@@ -15,7 +15,7 @@ categories = ["development-tools::testing"]
 lazy_static = "1.4"
 tracing-core = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-tracing-test-macro = { path = "../tracing-test-macro", version = "0.2.1" }
+tracing-test-macro = { path = "../tracing-test-macro", version = "0.2.4" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] } # Used for doctests

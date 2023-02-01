@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## 0.2.4 - 2023-02-01
+
+- [bug] `logs_assert` should not get logs from other tests (#19)
+- [bug] Fully qualify usage of `Result` in `logs_assert` (#17)
+- [docs] Add note that integration tests need no-env-filter (#20) 
+
+
 ## 0.2.3 - 2022-07-20
 
 - [feature] Add no-env-filter feature to disable log filtering (#16)
