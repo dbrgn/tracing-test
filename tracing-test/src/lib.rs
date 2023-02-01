@@ -130,6 +130,10 @@
 //! captured! This means that the `logs_contain` function may become less
 //! useful, and you might need to use `logs_assert` instead, with your own
 //! custom filtering logic.
+//!
+//! **Note:** Rust "integration tests" (in the `tests/` directory) are each
+//! built into a separate crate from the crate they test. As a result,
+//! integration tests must use `no-env-filter` to capture and observe logs.
 
 pub mod internal;
 mod subscriber;
