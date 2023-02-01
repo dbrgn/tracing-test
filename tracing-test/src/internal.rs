@@ -37,9 +37,9 @@ pub fn logs_with_scope_contain(scope: &str, val: &str) -> bool {
 /// This function should usually not be used directly, instead use the
 /// `logs_assert(F) where F: Fn(&[&str]) -> Result<(), String>` function
 /// injected by the [`#[traced_test]`](attr.traced_test.html) macro.
-pub fn logs_assert<F>(scope: &str, f: F) -> Result<(), String>
+pub fn logs_assert<F>(scope: &str, f: F) -> std::result::Result<(), String>
 where
-    F: Fn(&[&str]) -> Result<(), String>,
+    F: Fn(&[&str]) -> std::result::Result<(), String>,
 {
     let buf = GLOBAL_BUF.lock().unwrap();
     let logs: Vec<&str> = std::str::from_utf8(&buf)
