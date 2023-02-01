@@ -25,7 +25,7 @@ See <https://docs.rs/tracing-test/>.
 
 ## License
 
-Copyright © 2020-2022 Threema GmbH, Danilo Bargen and Contributors.
+Copyright © 2020-2023 Threema GmbH, Danilo Bargen and Contributors.
 
 Licensed under either of
 
