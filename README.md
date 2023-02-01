@@ -43,7 +43,7 @@ be dual licensed as above, without any additional terms or conditions.
 
 <!-- Badges -->
 [workflow]: https://github.com/dbrgn/tracing-test/actions?query=workflow%3ACI
-[workflow-badge]: https://img.shields.io/github/workflow/status/dbrgn/tracing-test/CI/main
+[workflow-badge]: https://img.shields.io/github/actions/workflow/status/dbrgn/tracing-test/ci.yml?branch=main
 [crates-io]: https://crates.io/crates/tracing-test
 [crates-io-badge]: https://img.shields.io/crates/v/tracing-test.svg?maxAge=3600
 [crates-io-download]: https://crates.io/crates/tracing-test
