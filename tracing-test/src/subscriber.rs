@@ -61,6 +61,6 @@ pub fn get_subscriber(mock_writer: MockWriter<'static>, env_filter: &str) -> Dis
         .with_env_filter(env_filter)
         .with_writer(mock_writer)
         .with_level(true)
-        .with_ansi(false)
+        .with_ansi(cfg!(feature = "ansi"))
         .into()
 }

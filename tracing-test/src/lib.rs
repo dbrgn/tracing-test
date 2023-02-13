@@ -85,6 +85,9 @@
 //! }
 //! ```
 //!
+//! If you like colored output, you can enable the `ansi` feature,
+//! which enables colored tracing levels in the logs
+//!
 //! ## Rationale / Why You Need This
 //!
 //! Tracing allows you to set a default subscriber within a scope:
