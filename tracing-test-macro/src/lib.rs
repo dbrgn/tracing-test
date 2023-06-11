@@ -13,7 +13,7 @@ use std::sync::Mutex;
 use lazy_static::lazy_static;
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse, ItemFn, Stmt};
+use syn::{parse, parse::Parser, parse_macro_input, AttributeArgs, ExprArray, Ident, ItemFn, Stmt};
 
 lazy_static! {
     /// Registered scopes.
@@ -49,12 +49,22 @@ fn get_free_scope(mut test_fn_name: String) -> String {
 ///
 /// Check out the docs of the `tracing-test` crate for more usage information.
 #[proc_macro_attribute]
-pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn traced_test(attr: TokenStream, item: TokenStream) -> TokenStream {
     // Parse annotated function
     let mut function: ItemFn = parse(item).expect("Could not parse ItemFn");
 
     // Determine scope
     let scope = get_free_scope(function.sig.ident.to_string());
+
+    let args = parse_macro_input!(attr as AttributeArgs);
+    let mut trace_crates: String = "".into();
+
+    for arg in args {
+        trace_crates.push_str(&format!(
+            ",{}=trace",
+            arg.to_token_stream().to_string().replace("\"", "")
+        ));
+    }
 
     // Determine features
     //
@@ -75,8 +85,11 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
                         .next()
                         .expect("Could not find crate name in module path")
                         .to_string();
-                    format!("{}=trace", crate_name)
+
+
+                    format!("{}=trace{}", crate_name, #trace_crates)
                 };
+
                 let mock_writer = tracing_test::internal::MockWriter::new(&tracing_test::internal::GLOBAL_BUF);
                 let subscriber = tracing_test::internal::get_subscriber(mock_writer, &env_filter);
                 tracing::dispatcher::set_global_default(subscriber)
