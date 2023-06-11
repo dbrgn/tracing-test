@@ -7,7 +7,7 @@ mod tests {
     use tracing_test::traced_test;
 
     #[tokio::test]
-    #[traced_test]
+    #[traced_test(targeted_crate)]
     async fn test_logs_are_captured() {
         // Local log
         info!("This is being logged on the info level");
