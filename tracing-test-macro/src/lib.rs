@@ -13,7 +13,9 @@ use std::sync::Mutex;
 use lazy_static::lazy_static;
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse, ItemFn, Stmt};
+use syn::{
+    parse, punctuated::Punctuated, spanned::Spanned, ItemFn, Lit, MetaNameValue, Stmt, Token,
+};
 
 lazy_static! {
     /// Registered scopes.
@@ -49,12 +51,51 @@ fn get_free_scope(mut test_fn_name: String) -> String {
 ///
 /// Check out the docs of the `tracing-test` crate for more usage information.
 #[proc_macro_attribute]
-pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn traced_test(attr: TokenStream, item: TokenStream) -> TokenStream {
     // Parse annotated function
     let mut function: ItemFn = parse(item).expect("Could not parse ItemFn");
 
-    // Determine scope
-    let scope = get_free_scope(function.sig.ident.to_string());
+    let mut scope = None;
+
+    let args_parsed = match parse::Parser::parse(
+        Punctuated::<MetaNameValue, Token![,]>::parse_terminated,
+        attr,
+    ) {
+        Ok(o) => o,
+        Err(e) => return e.into_compile_error().into(),
+    };
+
+    for arg in args_parsed.iter() {
+        if arg.path.is_ident("target") {
+            if scope.is_some() {
+                return syn::Error::new(arg.span(), "`target` already specified")
+                    .to_compile_error()
+                    .into();
+            }
+            if let Lit::Str(ref lit_str) = arg.lit {
+                scope = Some(lit_str.value());
+            } else {
+                return syn::Error::new(arg.span(), "`target` must be a string literal")
+                    .to_compile_error()
+                    .into();
+            }
+        } else {
+            return syn::Error::new(
+                arg.span(),
+                format!(
+                    "expected attribute `target`, got `{}`",
+                    arg.path.get_ident().unwrap()
+                ),
+            )
+            .to_compile_error()
+            .into();
+        }
+    }
+
+    let scope = match scope {
+        Some(scope) => scope,
+        None => get_free_scope(function.sig.ident.to_string()),
+    };
 
     // Determine features
     //
