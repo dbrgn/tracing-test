@@ -27,3 +27,5 @@ maintenance = { status = "experimental" }
 [features]
 # Disable hardcoded env filter
 no-env-filter = []
+# Increase compatibility with llvm-cov
+llvm-cov-compat = []

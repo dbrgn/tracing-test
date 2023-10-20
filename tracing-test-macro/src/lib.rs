@@ -62,6 +62,13 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
     //       evaluated in the context of the calling crate, not of the macro
     //       crate!
     let no_env_filter = cfg!(feature = "no-env-filter");
+    let llvm_cov_compat = cfg!(feature = "llvm-cov-compat");
+
+    let hide_from_coverage = if llvm_cov_compat {
+        quote! {#[cfg_attr(coverage_nightly, coverage(off))]}
+    } else {
+        quote! {}
+    };
 
     // Prepare code that should be injected at the start of the function
     let init = parse::<Stmt>(
@@ -93,10 +100,10 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
     .expect("Could not parse quoted statement enter");
     let logs_contain_fn = parse::<Stmt>(
         quote! {
+            #hide_from_coverage
             fn logs_contain(val: &str) -> bool {
                 tracing_test::internal::logs_with_scope_contain(#scope, val)
             }
-
         }
         .into(),
     )
@@ -106,6 +113,7 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
             /// Run a function against the log lines. If the function returns
             /// an `Err`, panic. This can be used to run arbitrary assertion
             /// logic against the logs.
+            #hide_from_coverage
             fn logs_assert(f: impl Fn(&[&str]) -> std::result::Result<(), String>) {
                 match tracing_test::internal::logs_assert(#scope, f) {
                     Ok(()) => {},

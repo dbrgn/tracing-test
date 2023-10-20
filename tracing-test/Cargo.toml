@@ -27,3 +27,8 @@ maintenance = { status = "experimental" }
 [features]
 # Disable hardcoded env filter
 no-env-filter = ["tracing-test-macro/no-env-filter"]
+# Increase compatibility with llvm-cov.
+# This prevents `#[traced_tests]` from showing up as uncovered.
+# Note that this requires `#![cfg_attr(coverage_nightly, feature(coverage_attribute))]`
+# to be added to user crates.
+llvm-cov-compat = ["tracing-test-macro/llvm-cov-compat"]
