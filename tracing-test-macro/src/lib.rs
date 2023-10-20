@@ -65,23 +65,14 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     // Prepare code that should be injected at the start of the function
     let init = parse::<Stmt>(
-        quote! {
-            tracing_test::internal::INITIALIZED.call_once(|| {
-                let env_filter = if #no_env_filter {
-                    "trace".to_string()
-                } else {
-                    let crate_name = module_path!()
-                        .split(":")
-                        .next()
-                        .expect("Could not find crate name in module path")
-                        .to_string();
-                    format!("{}=trace", crate_name)
-                };
-                let mock_writer = tracing_test::internal::MockWriter::new(&tracing_test::internal::GLOBAL_BUF);
-                let subscriber = tracing_test::internal::get_subscriber(mock_writer, &env_filter);
-                tracing::dispatcher::set_global_default(subscriber)
-                    .expect("Could not set global tracing subscriber");
-            });
+        if no_env_filter {
+            quote! {
+                tracing_test::internal::init(None);
+            }
+        } else {
+            quote! {
+                tracing_test::internal::init(Some(module_path!()));
+            }
         }
         .into(),
     )

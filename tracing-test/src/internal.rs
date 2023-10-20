@@ -6,15 +6,34 @@ use std::sync::{Mutex, Once};
 
 use lazy_static::lazy_static;
 
-pub use crate::subscriber::{get_subscriber, MockWriter};
+use crate::subscriber::{get_subscriber, MockWriter};
 
 /// Static variable to ensure that logging is only initialized once.
-pub static INITIALIZED: Once = Once::new();
+static INITIALIZED: Once = Once::new();
+
+pub fn init(module_path: Option<&str>) {
+    INITIALIZED.call_once(|| {
+        let env_filter = if let Some(module_path) = module_path {
+            let crate_name = module_path
+                .split(":")
+                .next()
+                .expect("Could not find crate name in module path")
+                .to_string();
+            format!("{}=trace", crate_name)
+        } else {
+            "trace".to_string()
+        };
+        let mock_writer = MockWriter::new(&GLOBAL_BUF);
+        let subscriber = get_subscriber(mock_writer, &env_filter);
+        tracing_core::dispatcher::set_global_default(subscriber)
+            .expect("Could not set global tracing subscriber");
+    });
+}
 
 lazy_static! {
     /// The global log output buffer used in tests.
     #[doc(hidden)]
-    pub static ref GLOBAL_BUF: Mutex<Vec<u8>> = Mutex::new(vec![]);
+    static ref GLOBAL_BUF: Mutex<Vec<u8>> = Mutex::new(vec![]);
 }
 
 /// Return whether the logs with the specified scope contain the specified value.
