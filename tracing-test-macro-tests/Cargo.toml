@@ -12,5 +12,5 @@ publish = false
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-tracing = { version = "0.1", default-features = false }
+tracing = { git = "https://github.com/tokio-rs/tracing", default-features = false }
 tracing-test = { path = "../tracing-test" }

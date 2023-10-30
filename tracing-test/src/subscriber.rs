@@ -4,7 +4,7 @@ use std::{
 };
 
 use tracing_core::Dispatch;
-use tracing_subscriber::{fmt::MakeWriter, FmtSubscriber};
+use tracing_subscriber::{fmt::MakeWriter};
 
 /// A fake writer that writes into a buffer (behind a mutex).
 #[derive(Debug)]
@@ -57,7 +57,7 @@ impl<'a> MakeWriter<'_> for MockWriter<'a> {
 ///
 /// [`MockWriter`]: struct.MockWriter.html
 pub fn get_subscriber(mock_writer: MockWriter<'static>, env_filter: &str) -> Dispatch {
-    FmtSubscriber::builder()
+    tracing_subscriber::fmt()
         .with_env_filter(env_filter)
         .with_writer(mock_writer)
         .with_level(true)

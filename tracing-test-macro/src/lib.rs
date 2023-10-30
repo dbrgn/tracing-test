@@ -79,7 +79,7 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 };
                 let mock_writer = tracing_test::internal::MockWriter::new(&tracing_test::internal::GLOBAL_BUF);
                 let subscriber = tracing_test::internal::get_subscriber(mock_writer, &env_filter);
-                tracing::dispatcher::set_global_default(subscriber)
+                tracing::dispatch::set_global_default(subscriber)
                     .expect("Could not set global tracing subscriber");
             });
         }
