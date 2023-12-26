@@ -13,13 +13,13 @@ categories = ["development-tools::testing"]
 
 [dependencies]
 lazy_static = "1.4"
-tracing-core = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-core = { git = "https://github.com/tokio-rs/tracing", features = ["std"] }
+tracing-subscriber = { git = "https://github.com/tokio-rs/tracing", features = ["env-filter"] }
 tracing-test-macro = { path = "../tracing-test-macro", version = "0.2.4" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] } # Used for doctests
-tracing = { version = "0.1", default-features = false, features = ["std"] }
+tracing = { git = "https://github.com/tokio-rs/tracing", default-features = false, features = ["std"] }
 
 [badges]
 maintenance = { status = "experimental" }
