@@ -12,7 +12,6 @@ readme = "../README.md"
 categories = ["development-tools::testing"]
 
 [dependencies]
-lazy_static = "1.4"
 tracing-core = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-test-macro = { path = "../tracing-test-macro", version = "0.2.4" }

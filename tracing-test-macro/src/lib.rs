@@ -8,28 +8,28 @@
 //! [tracing-test]: https://docs.rs/tracing-test
 extern crate proc_macro;
 
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 
-use lazy_static::lazy_static;
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
 use syn::{parse, ItemFn, Stmt};
 
-lazy_static! {
-    /// Registered scopes.
-    ///
-    /// By default, every traced test registers a span with the function name.
-    /// However, since multiple tests can share the same function name, in case
-    /// of conflict, a counter is appended.
-    ///
-    /// This vector is used to store all already registered scopes.
-    static ref REGISTERED_SCOPES: Mutex<Vec<String>> = Mutex::new(vec![]);
+/// Registered scopes.
+///
+/// By default, every traced test registers a span with the function name.
+/// However, since multiple tests can share the same function name, in case
+/// of conflict, a counter is appended.
+///
+/// This vector is used to store all already registered scopes.
+fn registered_scopes() -> &'static Mutex<Vec<String>> {
+    static REGISTERED_SCOPES: OnceLock<Mutex<Vec<String>>> = OnceLock::new();
+    REGISTERED_SCOPES.get_or_init(|| Mutex::new(vec![]))
 }
 
 /// Check whether this test function name is already taken as scope. If yes, a
 /// counter is appended to make it unique. In the end, a unique scope is returned.
 fn get_free_scope(mut test_fn_name: String) -> String {
-    let mut vec = REGISTERED_SCOPES.lock().unwrap();
+    let mut vec = registered_scopes().lock().unwrap();
     let mut counter = 1;
     let len = test_fn_name.len();
     while vec.contains(&test_fn_name) {
@@ -77,7 +77,7 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
                         .to_string();
                     format!("{}=trace", crate_name)
                 };
-                let mock_writer = tracing_test::internal::MockWriter::new(&tracing_test::internal::GLOBAL_BUF);
+                let mock_writer = tracing_test::internal::MockWriter::new(&tracing_test::internal::global_buf());
                 let subscriber = tracing_test::internal::get_subscriber(mock_writer, &env_filter);
                 tracing::dispatcher::set_global_default(subscriber)
                     .expect("Could not set global tracing subscriber");
