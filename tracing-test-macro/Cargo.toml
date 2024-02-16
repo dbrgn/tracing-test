@@ -17,7 +17,6 @@ categories = ["development-tools::testing"]
 proc-macro = true
 
 [dependencies]
-lazy_static = "1.4"
 quote = "1"
 syn = { version = "1", features = ["full"] }
 
