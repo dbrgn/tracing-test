@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## 0.2.5 - 2024-06-02
+
+- [change] Replace `lazy_static` dependency with `std::sync::OnceCell` (#36)
+- [change] Update syn (#40)
+- [change] Include license text in the packaged crates (#41)
+
+
 ## 0.2.4 - 2023-02-01
 
 - [bug] `logs_assert` should not get logs from other tests (#19)
