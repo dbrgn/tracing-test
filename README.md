@@ -12,10 +12,10 @@ The focus is on testing the logging, not on debugging the tests. That's why the
 library ensures that the logs do not depend on external state. For example, the
 `RUST_LOG` env variable is not used for log filtering by default.
 
-To suppress all log output, even when tests are run with `--nocapture`, enable
+To disable all log output, even when tests are run with `--nocapture`, enable
 the `no-log-printing` feature.
 
-To enable color output and support for filtering with `RUST_LOG` in the terminal
+To enable ANSI colors and support for filtering with `RUST_LOG` in the terminal
 output, enable the `pretty-log-printing` feature.
 
 Similar crates:
