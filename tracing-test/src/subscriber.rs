@@ -4,7 +4,7 @@ use std::{
 };
 
 use tracing_core::Dispatch;
-use tracing_subscriber::{fmt::MakeWriter, FmtSubscriber};
+use tracing_subscriber::{fmt::MakeWriter, layer::SubscriberExt, EnvFilter, Layer, Registry};
 
 /// A fake writer that writes into a buffer (behind a mutex).
 #[derive(Debug)]
@@ -32,10 +32,6 @@ impl<'a> io::Write for MockWriter<'a> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         // Lock target buffer
         let mut target = self.buf()?;
-
-        // Write to stdout in order to show up in tests
-        print!("{}", String::from_utf8(buf.to_vec()).unwrap());
-
         // Write to buffer
         target.write(buf)
     }
@@ -57,10 +53,21 @@ impl<'a> MakeWriter<'_> for MockWriter<'a> {
 ///
 /// [`MockWriter`]: struct.MockWriter.html
 pub fn get_subscriber(mock_writer: MockWriter<'static>, env_filter: &str) -> Dispatch {
-    FmtSubscriber::builder()
-        .with_env_filter(env_filter)
+    let filter = EnvFilter::new(env_filter);
+    let mock_writer_layer = tracing_subscriber::fmt::layer()
         .with_writer(mock_writer)
         .with_level(true)
         .with_ansi(false)
-        .into()
+        .with_filter(filter);
+
+    let print_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| env_filter.to_string());
+    let print_filter = EnvFilter::new(print_filter);
+    let print_layer = tracing_subscriber::fmt::layer()
+        .with_level(true)
+        .with_writer(std::io::stderr)
+        .with_filter(print_filter);
+    let subscriber = Registry::default()
+        .with(mock_writer_layer)
+        .with(print_layer);
+    subscriber.into()
 }
