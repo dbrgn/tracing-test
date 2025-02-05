@@ -49,7 +49,8 @@ impl<'a> MakeWriter<'_> for MockWriter<'a> {
     }
 }
 
-/// Return a new subscriber that writes to the specified [`MockWriter`].
+/// Return a new subscriber that writes to the specified [`MockWriter`] and
+/// to standard output.
 ///
 /// [`MockWriter`]: struct.MockWriter.html
 pub fn get_subscriber(mock_writer: MockWriter<'static>, env_filter: &str) -> Dispatch {
@@ -63,11 +64,32 @@ pub fn get_subscriber(mock_writer: MockWriter<'static>, env_filter: &str) -> Dis
     let print_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| env_filter.to_string());
     let print_filter = EnvFilter::new(print_filter);
     let print_layer = tracing_subscriber::fmt::layer()
+        .with_writer(|| TestWriter)
+        .event_format(tracing_subscriber::fmt::format().with_line_number(true))
         .with_level(true)
-        .with_writer(std::io::stderr)
         .with_filter(print_filter);
     let subscriber = Registry::default()
         .with(mock_writer_layer)
         .with(print_layer);
     subscriber.into()
+}
+
+/// A tracing writer that interacts well with test output capture.
+///
+/// Using this writer will make sure that the output is captured normally and only printed
+/// when the test fails.
+#[derive(Debug)]
+struct TestWriter;
+
+impl std::io::Write for TestWriter {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        print!(
+            "{}",
+            std::str::from_utf8(buf).expect("tried to log invalid UTF-8")
+        );
+        Ok(buf.len())
+    }
+    fn flush(&mut self) -> std::io::Result<()> {
+        std::io::stdout().flush()
+    }
 }
