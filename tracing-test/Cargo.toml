@@ -26,3 +26,7 @@ maintenance = { status = "experimental" }
 [features]
 # Disable hardcoded env filter
 no-env-filter = ["tracing-test-macro/no-env-filter"]
+# Disables log printing
+no-log-printing = []
+# Enables pretty log printing with support for RUST_LOG filtering and ansi colors
+pretty-log-printing = []

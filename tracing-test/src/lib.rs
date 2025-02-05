@@ -134,6 +134,14 @@
 //! **Note:** Rust "integration tests" (in the `tests/` directory) are each
 //! built into a separate crate from the crate they test. As a result,
 //! integration tests must use `no-env-filter` to capture and observe logs.
+//!
+//! ## Controlling log printing
+//!
+//! To suppress all log output, even when tests are run with `--nocapture`,
+//! enable `no-log-printing` feature.
+//!
+//! To enable color output and support for filtering with `RUST_LOG` in the
+//! terminal output, enable the `pretty-log-printing` feature.
 
 pub mod internal;
 mod subscriber;

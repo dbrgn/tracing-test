@@ -32,6 +32,11 @@ impl<'a> io::Write for MockWriter<'a> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         // Lock target buffer
         let mut target = self.buf()?;
+
+        // Print to output if no-log-printing is off and pretty-log-printing is off as well.
+        #[cfg(not(any(feature = "no-log-printing", feature = "pretty-log-printing")))]
+        print!("{}", String::from_utf8(buf.to_vec()).unwrap());
+
         // Write to buffer
         target.write(buf)
     }
@@ -61,16 +66,23 @@ pub fn get_subscriber(mock_writer: MockWriter<'static>, env_filter: &str) -> Dis
         .with_ansi(false)
         .with_filter(filter);
 
-    let print_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| env_filter.to_string());
-    let print_filter = EnvFilter::new(print_filter);
-    let print_layer = tracing_subscriber::fmt::layer()
-        .with_writer(|| TestWriter)
-        .event_format(tracing_subscriber::fmt::format().with_line_number(true))
-        .with_level(true)
-        .with_filter(print_filter);
-    let subscriber = Registry::default()
-        .with(mock_writer_layer)
-        .with(print_layer);
+    #[cfg(not(feature = "pretty-log-printing"))]
+    let subscriber = Registry::default().with(mock_writer_layer);
+
+    #[cfg(feature = "pretty-log-printing")]
+    let subscriber = {
+        let print_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| env_filter.to_string());
+        let print_filter = EnvFilter::new(print_filter);
+        let print_layer = tracing_subscriber::fmt::layer()
+            .with_writer(|| TestWriter)
+            .event_format(tracing_subscriber::fmt::format().with_line_number(true))
+            .with_level(true)
+            .with_filter(print_filter);
+        Registry::default()
+            .with(mock_writer_layer)
+            .with(print_layer)
+    };
+
     subscriber.into()
 }
 
@@ -78,9 +90,11 @@ pub fn get_subscriber(mock_writer: MockWriter<'static>, env_filter: &str) -> Dis
 ///
 /// Using this writer will make sure that the output is captured normally and only printed
 /// when the test fails.
+#[cfg(feature = "pretty-log-printing")]
 #[derive(Debug)]
 struct TestWriter;
 
+#[cfg(feature = "pretty-log-printing")]
 impl std::io::Write for TestWriter {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         print!(
