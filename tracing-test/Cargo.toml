@@ -24,6 +24,7 @@ tracing = { version = "0.1", default-features = false, features = ["std"] }
 maintenance = { status = "experimental" }
 
 [features]
+default = ["pretty-log-printing"]
 # Disable hardcoded env filter
 no-env-filter = ["tracing-test-macro/no-env-filter"]
 # Disables log printing

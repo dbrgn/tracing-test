@@ -16,7 +16,7 @@ To disable all log output, even when tests are run with `--nocapture`, enable
 the `no-log-printing` feature.
 
 To enable ANSI colors and support for filtering with `RUST_LOG` in the terminal
-output, enable the `pretty-log-printing` feature.
+output, enable the `pretty-log-printing` feature (enabled by default).
 
 Similar crates:
 
