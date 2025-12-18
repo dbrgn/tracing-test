@@ -13,7 +13,7 @@ categories = ["development-tools::testing"]
 
 [dependencies]
 tracing-core = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "registry"] }
 tracing-test-macro = { path = "../tracing-test-macro", version = "0.2.5" }
 
 [dev-dependencies]
@@ -24,5 +24,10 @@ tracing = { version = "0.1", default-features = false, features = ["std"] }
 maintenance = { status = "experimental" }
 
 [features]
+default = ["pretty-log-printing"]
 # Disable hardcoded env filter
 no-env-filter = ["tracing-test-macro/no-env-filter"]
+# Disables log printing
+no-log-printing = []
+# Enables pretty log printing with support for RUST_LOG filtering and ansi colors
+pretty-log-printing = []
