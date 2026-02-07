@@ -21,7 +21,7 @@
 //! ```toml
 //! tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 //! tracing = "0.1"
-//! tracing-test = "0.1"
+//! tracing-test = "0.2"
 //! ```
 //!
 //! Then, annotate your test function with the `#[traced_test]` macro.
@@ -123,7 +123,7 @@
 //! `no-env-filter` Cargo feature:
 //!
 //! ```toml
-//! tracing-test = { version = "0.1", features = ["no-env-filter"] }
+//! tracing-test = { version = "0.2", features = ["no-env-filter"] }
 //! ```
 //!
 //! Note that this will result in _all_ logs from _all_ your dependencies being
