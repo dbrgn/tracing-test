@@ -10,6 +10,7 @@
 //!   running tests
 //! - [tracing-fluent-assertions](https://crates.io/crates/tracing-fluent-assertions):
 //!   More powerful assertions that also allow analyzing spans
+//! - [tracing-assertions]: Provides ergonomic simple assertions on events.
 //!
 //! ## Usage
 //!
