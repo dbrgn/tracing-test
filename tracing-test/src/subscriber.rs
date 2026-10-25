@@ -1,6 +1,6 @@
 use std::{
     io,
-    sync::{Mutex, MutexGuard},
+    sync::{Mutex, MutexGuard, PoisonError},
 };
 
 use tracing_core::Dispatch;
@@ -22,9 +22,10 @@ impl<'a> MockWriter<'a> {
     fn buf(&self) -> io::Result<MutexGuard<'a, Vec<u8>>> {
         // Note: The `lock` will block. This would be a problem in production code,
         // but is fine in tests.
-        self.buf
-            .lock()
-            .map_err(|_| io::Error::from(io::ErrorKind::Other))
+        //
+        // A test that panicked while holding the lock poisons it, but the buffer is still
+        // valid, so keep writing to it instead of dropping every later log line.
+        Ok(self.buf.lock().unwrap_or_else(PoisonError::into_inner))
     }
 }
 

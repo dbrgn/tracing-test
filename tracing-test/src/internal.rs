@@ -2,7 +2,7 @@
 //!
 //! These functions should usually not be accessed from user code. The stability of these functions
 //! is not guaranteed, the API may change even in patch releases.
-use std::sync::{Mutex, Once, OnceLock};
+use std::sync::{Mutex, MutexGuard, Once, OnceLock, PoisonError};
 
 pub use crate::subscriber::{get_subscriber, MockWriter};
 
@@ -16,12 +16,20 @@ pub fn global_buf() -> &'static Mutex<Vec<u8>> {
     GLOBAL_BUF.get_or_init(|| Mutex::new(vec![]))
 }
 
+/// Lock the global log output buffer.
+///
+/// A test that panics while holding the lock (e.g. inside `logs_assert`) poisons it. The buffer
+/// is still valid, so the poison is ignored instead of failing every test that comes after.
+fn lock_global_buf() -> MutexGuard<'static, Vec<u8>> {
+    global_buf().lock().unwrap_or_else(PoisonError::into_inner)
+}
+
 /// Return whether the logs with the specified scope contain the specified value.
 ///
 /// This function should usually not be used directly, instead use the `logs_contain(val: &str)`
 /// function injected by the [`#[traced_test]`](attr.traced_test.html) macro.
 pub fn logs_with_scope_contain(scope: &str, val: &str) -> bool {
-    let logs = String::from_utf8(global_buf().lock().unwrap().to_vec()).unwrap();
+    let logs = String::from_utf8(lock_global_buf().to_vec()).unwrap();
     for line in logs.split('\n') {
         if line.contains(&format!(" {}:", scope)) && line.contains(val) {
             return true;
@@ -40,7 +48,7 @@ pub fn logs_assert<F>(scope: &str, f: F) -> std::result::Result<(), String>
 where
     F: Fn(&[&str]) -> std::result::Result<(), String>,
 {
-    let buf = global_buf().lock().unwrap();
+    let buf = lock_global_buf();
     let logs: Vec<&str> = std::str::from_utf8(&buf)
         .expect("Logs contain invalid UTF8")
         .lines()

@@ -84,4 +84,28 @@ mod tests {
             }
         });
     }
+
+    #[traced_test]
+    #[test]
+    fn logs_are_still_captured_after_a_panic_inside_logs_assert() {
+        // A panic inside the closure runs while the global log buffer is locked, which
+        // poisons that lock for every test that comes after this one
+        let result = std::panic::catch_unwind(|| {
+            logs_assert(|_lines: &[&str]| panic!("Panicking inside logs_assert"));
+        });
+        assert!(result.is_err());
+
+        info!("Logged after the panic");
+        assert!(logs_contain("Logged after the panic"));
+        logs_assert(|lines: &[&str]| {
+            match lines
+                .iter()
+                .filter(|line| line.contains("Logged after the panic"))
+                .count()
+            {
+                1 => Ok(()),
+                n => Err(format!("Count should be 1, but was {}", n)),
+            }
+        });
+    }
 }
