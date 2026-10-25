@@ -81,6 +81,10 @@ pub fn traced_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 let subscriber = tracing_test::internal::get_subscriber(mock_writer, &env_filter);
                 tracing::dispatcher::set_global_default(subscriber)
                     .expect("Could not set global tracing subscriber");
+                // A callsite first reached on another thread between the subscriber's
+                // registration and `set_global_default` caches `Interest::never`, which
+                // silently drops its events for the rest of the run
+                tracing::callsite::rebuild_interest_cache();
             });
         }
         .into(),
